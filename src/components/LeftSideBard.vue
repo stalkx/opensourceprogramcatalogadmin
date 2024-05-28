@@ -44,6 +44,10 @@ function goToCategory() {
   router.push({ path: '/category'})
 }
 
+function goToUser() {
+  router.push({ path: '/user'})
+}
+
 onMounted(() => {
   getAdminInfo()
 })
@@ -70,7 +74,7 @@ onMounted(() => {
       </div>
       <div class="flex flex-col gap-4">
         <Button label="Адміністрування Додатків" icon="pi pi-microsoft" @click="goToProgram()"/>
-        <Button label="Адміністрування Користувачів" icon="pi pi-user" @click="goToProgram()"/>
+        <Button label="Адміністрування Користувачів" icon="pi pi-user" @click="goToUser()"/>
         <Button label="Адміністрування Категорій" icon="pi pi-align-justify" @click="goToCategory"/>
       </div>
     </div>

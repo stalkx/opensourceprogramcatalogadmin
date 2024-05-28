@@ -4,8 +4,8 @@ import Admin from '@/views/Admin.vue'
 import LoginView from '@/views/LoginView.vue'
 import TestView from '@/views/TestView.vue'
 import ProgramView from '@/views/Program/ProgramView.vue'
-import CreateProgram from '@/views/Program/CreateProgramView.vue'
 import CategoryView from '@/views/Category/CategoryView.vue'
+import UserView from '@/views/User/UserView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,9 +31,9 @@ const router = createRouter({
           component: ProgramView,
         },
         {
-          path: '/create-program',
-          name: 'create-program',
-          component: CreateProgram,
+          path: '/user',
+          name: 'user',
+          component: UserView,
         },
         {
           path: '/category',
