@@ -29,7 +29,8 @@ const props = defineProps({
   programSystemSupport: String,
   programDownloadUrl: String,
   programGitHubUrl: String,
-  addedAt: [String, Date]
+  addedAt: [String, Date],
+  category: Object
 })
 const editProgramData = ref({
   programId: props.programId,
@@ -41,7 +42,8 @@ const editProgramData = ref({
   programSystemSupport: props.programSystemSupport,
   programDownloadUrl: props.programDownloadUrl,
   programGitHubUrl: props.programGitHubUrl,
-  addedAt: props.addedAt
+  addedAt: props.addedAt,
+  category: props.category
 })
 
 const createComment = ref({
@@ -69,6 +71,7 @@ const typeSort = ref([
 ]);
 const editProgramDialog = ref(false)
 const currentUser = ref({})
+const categoryData = ref([])
 
 
 
@@ -254,10 +257,35 @@ async function deleteComment(comment) {
     .catch(error => console.error(error))
 }
 
+async function getAllCategory(){
+
+  const myHeaders = new Headers();
+  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  myHeaders.append('Content-Type', 'application/json');
+
+  const options = {
+    method: 'GET',
+    headers: myHeaders
+  };
+
+  categoryData.value = await fetch('http://localhost:8080/api/v1/category', options)
+    .then(response => {
+      if (response.status === 401){
+        localStorage.removeItem('token')
+        router.push('/')
+      }else {
+        return response
+      }
+    })
+    .then(response => response.json())
+    .then(data => data)
+}
+
 onMounted(() => {
   getAverageRating()
   getAdminInfo()
   getAllComment()
+  getAllCategory()
 
   if (props.addedAt) {
     const date = new Date(props.addedAt)
@@ -279,7 +307,7 @@ watch(commentPage, () => {
 
 <template>
 
-  <Dialog v-model:visible="editProgramDialog" modal header="Створення додатку" class="w-5/6">
+  <Dialog v-model:visible="editProgramDialog" modal header="Створення додатку" :style="{ width: 'width: 100px' }">
     <div class="flex flex-col gap-2">
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Ім'я додатку</h1>
@@ -308,6 +336,10 @@ watch(commentPage, () => {
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Операційні системи додатку</h1>
         <InputText v-model:="editProgramData.programSystemSupport" placeholder="Операційні системи додатку"/>
+      </div>
+      <div class="flex border-b mt-2 p-2 flex-col gap-2">
+        <h1>Категорія</h1>
+        <Dropdown v-model="editProgramData.category" :options="categoryData.content" optionLabel="categoryName" placeholder="Виберіть категорію" class="w-full" />
       </div>
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Посилання на GitHUB</h1>

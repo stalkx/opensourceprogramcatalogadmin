@@ -14,13 +14,14 @@ import Paginator from 'primevue/paginator';
 import Dialog from 'primevue/dialog'
 import FileUpload from 'primevue/fileupload'
 import Tiptap from '@/components/Tiptap.vue'
-
+import Dropdown from 'primevue/dropdown';
 
 const router = useRouter()
 let first = ref(0)
 let programResponse = ref([])
 const createProgramDialog = ref(false)
 const text = ref('')
+const categoryData = ref([])
 
 const createProgramData = ref({
   programName: '',
@@ -30,7 +31,8 @@ const createProgramData = ref({
   programDeveloper: '',
   programSystemSupport: '',
   programDownloadUrl: '',
-  programGitHubUrl: ''
+  programGitHubUrl: '',
+  category: {}
 })
 
 async function getAllProgram(){
@@ -94,6 +96,36 @@ async function saveProgram(){
     .catch(error => console.error(error));
 }
 
+async function getAllCategory(){
+
+  const myHeaders = new Headers();
+  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  myHeaders.append('Content-Type', 'application/json');
+
+  const options = {
+    method: 'GET',
+    headers: myHeaders
+  };
+
+  categoryData.value = await fetch('http://localhost:8080/api/v1/category', options)
+    .then(response => {
+      if (response.status === 401){
+        localStorage.removeItem('token')
+        router.push('/')
+      }else {
+        return response
+      }
+    })
+    .then(response => response.json())
+    .then(data => data)
+
+
+  // Забезпечуємо, що selectedCategory має значення після завантаження даних
+  if (categoryData.value && categoryData.value.content && categoryData.value.content.length > 0) {
+    createProgramData.value.category = categoryData.value.content[0]
+  }
+}
+
 watch(first, () => {
   getAllProgram()
 })
@@ -104,6 +136,7 @@ watch(text, () => {
 
 onMounted(() => {
   getAllProgram()
+  getAllCategory()
 })
 
 watch(programResponse, () => {
@@ -138,6 +171,8 @@ watch(programResponse, () => {
                      :program-system-support="program.programSystemSupport"
                      :program-git-hub-url="program.programGitHubUrl"
                      :program-description="program.programDescription"
+                     :program-download-url="program.programDownloadUrl"
+                     :category="program.category"
         />
       </div>
     </div>
@@ -174,6 +209,10 @@ watch(programResponse, () => {
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Операційні системи додатку</h1>
         <InputText v-model:="createProgramData.programSystemSupport" placeholder="Операційні системи додатку"/>
+      </div>
+      <div class="flex border-b mt-2 p-2 flex-col gap-2">
+        <h1>Категорія</h1>
+        <Dropdown v-model="createProgramData.category" :options="categoryData.content" optionLabel="categoryName" placeholder="Виберіть категорію" class="w-full" />
       </div>
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Посилання на GitHUB</h1>
