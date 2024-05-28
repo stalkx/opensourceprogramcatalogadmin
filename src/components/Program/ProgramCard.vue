@@ -307,7 +307,7 @@ watch(commentPage, () => {
 
 <template>
 
-  <Dialog v-model:visible="editProgramDialog" modal header="Створення додатку" :style="{ width: 'width: 100px' }">
+  <Dialog v-model:visible="editProgramDialog" modal header="Створення додатку" :style="{ width: '83.333333%' }">
     <div class="flex flex-col gap-2">
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Ім'я додатку</h1>
@@ -358,7 +358,7 @@ watch(commentPage, () => {
   </Dialog>
 
 
-  <Dialog v-model:visible="readMoreProgramDialog" modal :header="props.programName" class="w-10/12">
+  <Dialog v-model:visible="readMoreProgramDialog" modal :header="props.programName" :style="{ width: '83.333333%' }">
     <div class="flex flex-row gap-5 border-b w-full p-2">
       <div class="border rounded p-2">
         <Image :src="props.programIconUrl" width="250" alt="Image" preview />
@@ -383,6 +383,11 @@ watch(commentPage, () => {
           <i class="pi pi-microsoft"></i>
           <h1 class="font-bold">Операційні системи які підримує додаток:</h1>
           <p>{{ props.programSystemSupport }}</p>
+        </div>
+        <div class="flex flex-row gap-2 items-center">
+          <i class="pi pi-microsoft"></i>
+          <h1 class="font-bold">Категорія:</h1>
+          <p>{{ props.category.categoryName }}</p>
         </div>
         <div class="flex flex-row gap-2 items-center">
           <i class="pi pi-github"></i>
@@ -454,7 +459,9 @@ watch(commentPage, () => {
 
   <div class="card flex flex-col gap-3 p-2 border max-w-72">
     <div class="p-2 flex flex-col align-middle justify-center">
-      <Image :src="props.programIconUrl" width="250" alt="Image" preview />
+      <div class="max-h-64 min-h-64 flex flex-col justify-center">
+        <Image :src="props.programIconUrl" width="250" alt="Image" preview />
+      </div>
       <h1>{{props.programName}}</h1>
       <h1>{{formattedAddedAt}}</h1>
     </div>

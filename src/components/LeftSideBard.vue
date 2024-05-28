@@ -3,9 +3,12 @@ import Button from 'primevue/button'
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext'
 
 const router = useRouter()
 const userInfo = ref({})
+const showAboutAdmin = ref(false)
 
 async function getAdminInfo(){
 
@@ -48,6 +51,18 @@ onMounted(() => {
 </script>
 
 <template>
+
+  <Dialog v-model:visible="showAboutAdmin" modal header="Про Адміна" :style="{ width: '25rem' }">
+    <div class="flex items-center gap-3 mb-3">
+      <label for="username" class="font-semibold w-[6rem]">Логін</label>
+      <InputText v-model:="userInfo.login"/>
+    </div>
+    <div class="flex items-center gap-3 mb-5">
+      <label for="email" class="font-semibold w-[6rem]">Пароль</label>
+      <InputText v-model:="userInfo.password" class="flex-auto" autocomplete="off" />
+    </div>
+  </Dialog>
+
   <div class="h-screen border p-5 flex flex-col justify-between">
     <div>
       <div class="border-b mb-5">
@@ -57,13 +72,11 @@ onMounted(() => {
         <Button label="Адміністрування Додатків" icon="pi pi-microsoft" @click="goToProgram()"/>
         <Button label="Адміністрування Користувачів" icon="pi pi-user" @click="goToProgram()"/>
         <Button label="Адміністрування Категорій" icon="pi pi-align-justify" @click="goToCategory"/>
-        <Button label="Адміністрування Ролів" icon="pi pi-eye-slash" @click="goToProgram()"/>
       </div>
     </div>
-    <div class="border-t w-full">
-      <h1>{{ userInfo.login }}</h1>
-      <Button class="mt-2" :label="userInfo.login" severity="danger" icon="pi pi-file-export" @click="go()"/>
-      <Button class="mt-2" label="Вийти" severity="danger" icon="pi pi-file-export" @click="go()"/>
+    <div class="border-t w-full flex flex-col gap-2">
+      <Button :label="userInfo.login" icon="pi pi-file-export" @click="showAboutAdmin = true"/>
+      <Button label="Вийти" severity="danger" icon="pi pi-file-export" @click="go()"/>
     </div>
   </div>
 </template>

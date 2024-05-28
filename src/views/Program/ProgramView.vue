@@ -22,6 +22,7 @@ let programResponse = ref([])
 const createProgramDialog = ref(false)
 const text = ref('')
 const categoryData = ref([])
+let searchProgram = ref('')
 
 const createProgramData = ref({
   programName: '',
@@ -34,6 +35,31 @@ const createProgramData = ref({
   programGitHubUrl: '',
   category: {}
 })
+
+const selectedSortByTime = ref({
+  name: 'Спочатку старі',
+  type: 'asc'
+})
+const typeSort = ref([
+  { name: 'Спочатку старі', type: 'asc' },
+  { name: 'Спочатку нові', type: 'desc' }
+]);
+
+async function searchProgramByName(){
+
+  if (searchProgram.value != ''){
+    const options = {
+      method: 'GET'
+    };
+
+    programResponse.value = await fetch(`http://localhost:8080/api/v1/program/search/${searchProgram.value}?size=4&page=${first.value}&sort=addedAt,${selectedSortByTime.value.type}`, options)
+      .then(response => response)
+      .then(response => response.json())
+      .then(data => data)
+  }else {
+    await getAllProgram()
+  }
+}
 
 async function getAllProgram(){
 
@@ -48,7 +74,7 @@ async function getAllProgram(){
     headers: myHeaders
   };
 
-  programResponse.value = await fetch('http://localhost:8080/api/v1/program?size=6&page=' + first.value, options)
+  programResponse.value = await fetch(`http://localhost:8080/api/v1/program?size=4&page=${first.value}&sort=addedAt,${selectedSortByTime.value.type}`, options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
@@ -134,6 +160,18 @@ watch(text, () => {
   console.log(text.value)
 })
 
+watch(searchProgram, () => {
+  searchProgramByName()
+})
+
+watch(selectedSortByTime, () => {
+  if (searchProgram.value !== ''){
+    searchProgramByName()
+  }else {
+    getAllProgram()
+  }
+})
+
 onMounted(() => {
   getAllProgram()
   getAllCategory()
@@ -151,12 +189,13 @@ watch(programResponse, () => {
     <div class="border-b p-2">
       <span class="relative">
         <i class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600" />
-        <InputText placeholder="Пошук" class="pl-10 w-full" />
+        <InputText v-model:="searchProgram" placeholder="Пошук" class="pl-10 w-full" />
       </span>
     </div>
 
-    <div class="p-2">
+    <div class="p-2 flex flex-row justify-between">
       <Button label="+ Додати нове програмне обезспечення" @click="createProgramDialog = true"/>
+      <Dropdown v-model="selectedSortByTime" :options="typeSort" optionLabel="name" placeholder="Тип сортування" class="w-full md:w-[14rem]" />
     </div>
 
     <div class="p-2 m-2">
