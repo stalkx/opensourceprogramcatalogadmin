@@ -19,6 +19,7 @@ const router = useRouter()
 const showAddUser = ref(false)
 const selectedRole = ref({})
 const roleData = ref([])
+const userLoginSearch = ref()
 
 const createUserData = ref({
   login: '',
@@ -138,7 +139,7 @@ async function getAllUser(){
     headers: myHeaders
   };
 
-  userResponse.value = await fetch(`http://localhost:8080/api/v1/user?size=4&page=${first.value}`, options)
+  userResponse.value = await fetch(`http://localhost:8080/api/v1/user?size=6&page=${first.value}`, options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
@@ -151,6 +152,22 @@ async function getAllUser(){
     .then(data => data)
 }
 
+async function searchUserByLogin(){
+
+  if (userLoginSearch.value != ''){
+    const options = {
+      method: 'GET'
+    };
+
+    userResponse.value = await fetch(`http://localhost:8080/api/v1/user/search/${userLoginSearch.value}?size=6&page=${first.value}`, options)
+      .then(response => response)
+      .then(response => response.json())
+      .then(data => data)
+  }else {
+    await getAllUser()
+  }
+}
+
 onMounted(() => {
   getAllUser()
   getAllRole()
@@ -160,12 +177,16 @@ watch(first, () => {
   getAllUser()
 })
 
+watch(userLoginSearch, () => {
+  searchUserByLogin()
+})
+
 </script>
 
 <template>
 
   <Dialog v-model:visible="showAddUser" modal header="Додаванян користувача" :style="{ width: '25rem' }">
-    <span class="text-surface-600 dark:text-surface-0/70 block mb-5">Update your information.</span>
+    <span class="text-surface-600 dark:text-surface-0/70 block mb-5">Створення нового користувача.</span>
     <div class="flex items-center gap-3 mb-3">
       <label for="username" class="font-semibold w-[6rem]">Логін</label>
       <InputText v-model:="createUserData.login" id="username" class="flex-auto" autocomplete="off" />
@@ -188,7 +209,7 @@ watch(first, () => {
     <div class="border-b p-2">
       <span class="relative">
         <i class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600" />
-        <InputText placeholder="Пошук" class="pl-10 w-full" />
+        <InputText v-model:="userLoginSearch" placeholder="Пошук" class="pl-10 w-full" />
       </span>
     </div>
 

@@ -18,6 +18,7 @@ const props = defineProps({
   removeFunction: Function,
   editFunction: Function
 })
+
 const removeUserData = ref({
   userId: Number(props.userId),
   login: props.login,

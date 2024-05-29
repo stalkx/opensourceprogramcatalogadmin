@@ -2,7 +2,7 @@
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext';
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 
 const router = useRouter()
 
@@ -44,6 +44,15 @@ function sendData(){
       console.error('Error:', error);
     });
 }
+
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
+
+  if (token && role && role.includes('ROLE_ADMIN')) {
+    router.push('admin');
+  }
+})
 </script>
 
 <template>

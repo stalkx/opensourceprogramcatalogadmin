@@ -48,6 +48,11 @@ function goToUser() {
   router.push({ path: '/user'})
 }
 
+function unLogin(){
+  localStorage.removeItem("token")
+  router.push({ path: '/login'})
+}
+
 onMounted(() => {
   getAdminInfo()
 })
@@ -59,11 +64,7 @@ onMounted(() => {
   <Dialog v-model:visible="showAboutAdmin" modal header="Про Адміна" :style="{ width: '25rem' }">
     <div class="flex items-center gap-3 mb-3">
       <label for="username" class="font-semibold w-[6rem]">Логін</label>
-      <InputText v-model:="userInfo.login"/>
-    </div>
-    <div class="flex items-center gap-3 mb-5">
-      <label for="email" class="font-semibold w-[6rem]">Пароль</label>
-      <InputText v-model:="userInfo.password" class="flex-auto" autocomplete="off" />
+      <InputText readonly id="username" v-model:="userInfo.login"/>
     </div>
   </Dialog>
 
@@ -80,7 +81,7 @@ onMounted(() => {
     </div>
     <div class="border-t w-full flex flex-col gap-2">
       <Button :label="userInfo.login" icon="pi pi-file-export" @click="showAboutAdmin = true"/>
-      <Button label="Вийти" severity="danger" icon="pi pi-file-export" @click="go()"/>
+      <Button label="Вийти" severity="danger" icon="pi pi-file-export" @click="unLogin()"/>
     </div>
   </div>
 </template>
