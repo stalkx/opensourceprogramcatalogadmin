@@ -11,7 +11,7 @@ const props = defineProps({
   password: String
 })
 const removeUserData = ref({
-  userId: props.userId,
+  userId: Number(props.userId),
   login: props.login,
   password: props.password
 })
@@ -27,7 +27,7 @@ async function removeUser() {
   const options = {
     method: 'POST',
     headers: myHeaders,
-    body: JSON.stringify(removeUserData),
+    body: JSON.stringify(removeUserData.value),
   }
 
   await fetch(`http://localhost:8080/api/v1/user/remove`, options)
@@ -36,6 +36,7 @@ async function removeUser() {
         localStorage.removeItem('token')
         router.push('/')
       } else {
+        router.push('/user')
         return response.json()
       }
     })

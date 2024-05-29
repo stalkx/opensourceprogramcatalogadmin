@@ -1,7 +1,7 @@
 <script setup>
 
 
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import Paginator from 'primevue/paginator';
 import { useRouter } from 'vue-router'
 import InputText from 'primevue/inputtext'
@@ -105,6 +105,10 @@ onMounted(() => {
   getAllRole()
 })
 
+watch(first, () => {
+  getAllUser()
+})
+
 </script>
 
 <template>
@@ -143,7 +147,7 @@ onMounted(() => {
 
     <div class="flex flex-col gap-2 m-5">
       <UserItem v-for="user in userResponse.content" :key="user.userId"
-                user-id="user.userId"
+                :user-id="user.userId"
                 :login="user.login"
                 :password="user.password"
       />
