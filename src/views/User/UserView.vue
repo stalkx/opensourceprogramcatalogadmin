@@ -74,6 +74,57 @@ async function getAllRole(){
     .then(data => data)
 }
 
+// Function to delete a comment
+async function removeUser(user) {
+  const myHeaders = new Headers()
+  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`)
+  myHeaders.append('Content-Type', 'application/json')
+
+  const options = {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify(user),
+  }
+
+  await fetch(`http://localhost:8080/api/v1/user/remove`, options)
+    .then(response => {
+      if (response.status === 401) {
+        localStorage.removeItem('token')
+        router.push('/')
+      } else {
+        getAllUser()
+        return response.json()
+      }
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error(error))
+}
+
+async function editUser(editUserData){
+  const myHeaders = new Headers();
+  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  myHeaders.append('Content-Type', 'application/json');
+
+  const options = {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify(editUserData),
+  };
+
+  await fetch('http://localhost:8080/api/v1/user/update', options)
+    .then(response => {
+      if(response.status === 401){
+        localStorage.removeItem('token')
+        router.push('/')
+      }else {
+        getAllUser()
+        return response.json()
+      }
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+}
+
 async function getAllUser(){
 
   console.log(first.value)
@@ -150,6 +201,9 @@ watch(first, () => {
                 :user-id="user.userId"
                 :login="user.login"
                 :password="user.password"
+                :roles="user.roles"
+                :remove-function="removeUser"
+                :edit-function="editUser"
       />
     </div>
     <Paginator class="mt-auto" v-model:first="first" :rows="1" :totalRecords="userResponse.totalPages" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" />

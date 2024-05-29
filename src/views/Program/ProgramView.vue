@@ -45,6 +45,30 @@ const typeSort = ref([
   { name: 'Спочатку нові', type: 'desc' }
 ]);
 
+async function removeProgram(programId){
+  const myHeaders = new Headers();
+  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  myHeaders.append('Content-Type', 'application/json');
+
+  const options = {
+    method: 'POST',
+    headers: myHeaders,
+  };
+
+  await fetch('http://localhost:8080/api/v1/program/remove/' + programId, options)
+    .then(response => {
+      if(response.status === 401){
+        localStorage.removeItem('token')
+        router.push('/')
+      }else {
+        getAllProgram()
+        return response.json()
+      }
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+}
+
 async function searchProgramByName(){
 
   if (searchProgram.value != ''){
@@ -152,6 +176,31 @@ async function getAllCategory(){
   }
 }
 
+async function editProgram(editProgramData){
+  const myHeaders = new Headers();
+  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  myHeaders.append('Content-Type', 'application/json');
+
+  const options = {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify(editProgramData),
+  };
+
+  await fetch('http://localhost:8080/api/v1/program/update', options)
+    .then(response => {
+      if(response.status === 401){
+        localStorage.removeItem('token')
+        router.push('/')
+      }else {
+        getAllProgram()
+        return response.json()
+      }
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+}
+
 watch(first, () => {
   getAllProgram()
 })
@@ -212,6 +261,8 @@ watch(programResponse, () => {
                      :program-description="program.programDescription"
                      :program-download-url="program.programDownloadUrl"
                      :category="program.category"
+                     :remove-function="removeProgram"
+                     :edit-function="editProgram"
         />
       </div>
     </div>

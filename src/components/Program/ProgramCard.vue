@@ -30,7 +30,9 @@ const props = defineProps({
   programDownloadUrl: String,
   programGitHubUrl: String,
   addedAt: [String, Date],
-  category: Object
+  category: Object,
+  removeFunction: Function,
+  editFunction: Function
 })
 const editProgramData = ref({
   programId: props.programId,
@@ -80,53 +82,6 @@ function formatCommentDate(date) {
   return format(new Date(date), 'dd-MM-yyyy HH:mm');
 }
 
-async function editProgram(){
-  const myHeaders = new Headers();
-  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
-  myHeaders.append('Content-Type', 'application/json');
-
-  const options = {
-    method: 'POST',
-    headers: myHeaders,
-    body: JSON.stringify(editProgramData.value),
-  };
-
-  await fetch('http://localhost:8080/api/v1/program/update', options)
-    .then(response => {
-      if(response.status === 401){
-        localStorage.removeItem('token')
-        router.push('/')
-      }else {
-        return response.json()
-      }
-    })
-    .then(data => console.log(data))
-    .catch(error => console.error(error));
-}
-
-async function removeProgram(){
-  const myHeaders = new Headers();
-  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
-  myHeaders.append('Content-Type', 'application/json');
-
-  const options = {
-    method: 'POST',
-    headers: myHeaders,
-  };
-
-  await fetch('http://localhost:8080/api/v1/program/remove/' + props.programId, options)
-    .then(response => {
-      if(response.status === 401){
-        localStorage.removeItem('token')
-        router.push('/')
-      }else {
-        router.push('/admin')
-        return response.json()
-      }
-    })
-    .then(data => console.log(data))
-    .catch(error => console.error(error));
-}
 
 async function getAverageRating() {
   const myHeaders = new Headers();
@@ -351,7 +306,7 @@ watch(commentPage, () => {
       </div>
     </div>
     <div class="flex justify-end gap-2">
-      <Button label="Зберегти" @click="editProgram()" />
+      <Button label="Зберегти" @click="editFunction(editProgramData)" />
     </div>
 
     <div class="prose" v-html="text"></div>
@@ -445,9 +400,9 @@ watch(commentPage, () => {
                   </div>
                 </div>
                 <div class="prose" v-html="comment.commentBody"></div>
-                <div v-if="currentUser && comment.user.userId === currentUser.userId" class="flex justify-end">
-                  <Button @click="deleteComment(comment)" icon="pi pi-trash" label="Видалити" class="p-button-danger p-button-text"/>
-                </div>
+<!--                <div v-if="currentUser && comment.user.userId === currentUser.userId" class="flex justify-end">-->
+<!--                </div>-->
+                <Button @click="deleteComment(comment)" icon="pi pi-trash" label="Видалити" class="p-button-danger p-button-text"/>
               </div>
             </div>
           </div>
@@ -468,7 +423,7 @@ watch(commentPage, () => {
     <div class="flex justify-between border-t p-2">
       <Button @click="readMoreProgramDialog = true" icon="pi pi-download" size="small" />
       <Button @click="editProgramDialog = true" icon="pi pi-file-edit" size="small" severity="warning" />
-      <Button @click="removeProgram()" icon="pi pi-delete-left" size="small" severity="danger" />
+      <Button @click="removeFunction(props.programId)" icon="pi pi-delete-left" size="small" severity="danger" />
     </div>
   </div>
 </template>
