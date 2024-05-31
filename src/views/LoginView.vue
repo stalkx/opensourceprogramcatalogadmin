@@ -26,7 +26,7 @@ function sendData(){
     .then(response => response.json())
     .then(data => {
       if( data.status === 401){
-        router.push('/')
+        router.push('/login')
       }else {
         if(data.rolesList.includes('ROLE_ADMIN')){
           console.log('Success:', data);
