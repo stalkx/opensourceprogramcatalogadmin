@@ -38,7 +38,7 @@ async function saveUser(){
     body: JSON.stringify(createUserData.value),
   };
 
-  await fetch('http://localhost:8080/api/v1/auth/register', options)
+  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/auth/register', options)
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')
@@ -62,7 +62,7 @@ async function getAllRole(){
     headers: myHeaders
   };
 
-  roleData.value = await fetch(`http://localhost:8080/api/v1/role?size=4&page=0`, options)
+  roleData.value = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/role?size=4&page=0`, options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
@@ -87,7 +87,7 @@ async function removeUser(user) {
     body: JSON.stringify(user),
   }
 
-  await fetch(`http://localhost:8080/api/v1/user/remove`, options)
+  await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/user/remove`, options)
     .then(response => {
       if (response.status === 401) {
         localStorage.removeItem('token')
@@ -112,7 +112,7 @@ async function editUser(editUserData){
     body: JSON.stringify(editUserData),
   };
 
-  await fetch('http://localhost:8080/api/v1/user/update', options)
+  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/user/update', options)
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')
@@ -137,7 +137,7 @@ async function editUserPassword(editUserData){
     body: JSON.stringify(editUserData),
   };
 
-  await fetch('http://localhost:8080/api/v1/user/update-password', options)
+  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/user/update-password', options)
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')
@@ -164,7 +164,7 @@ async function getAllUser(){
     headers: myHeaders
   };
 
-  userResponse.value = await fetch(`http://localhost:8080/api/v1/user?size=6&page=${first.value}`, options)
+  userResponse.value = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/user?size=6&page=${first.value}`, options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
@@ -186,7 +186,7 @@ async function searchUserByLogin(){
       method: 'GET'
     };
 
-    userResponse.value = await fetch(`http://localhost:8080/api/v1/user/search/${userLoginSearch.value}?size=6&page=${first.value}`, options)
+    userResponse.value = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/user/search/${userLoginSearch.value}?size=6&page=${first.value}`, options)
       .then(response => response)
       .then(response => response.json())
       .then(data => data)
@@ -223,8 +223,8 @@ watch(userLoginSearch, () => {
       <InputText v-model:="createUserData.password" id="password" class="flex-auto" autocomplete="off" />
     </div>
     <div class="flex items-center gap-3 mb-5">
-      <label for="email" class="font-semibold w-[6rem]">Email</label>
-      <Dropdown v-model="createUserData.role" :options="roleData.content" optionLabel="roleName" placeholder="Виберіть категорію" class="w-full" />
+      <label for="email" class="font-semibold w-[6rem]">Роль</label>
+      <Dropdown v-model="createUserData.role" :options="roleData.content" optionLabel="roleName" placeholder="Виберіть роль" class="w-full" />
     </div>
     <div class="flex justify-end gap-2">
       <Button type="button" label="Зберегти" @click="saveUser()"></Button>

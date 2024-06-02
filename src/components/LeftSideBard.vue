@@ -21,7 +21,7 @@ async function getAdminInfo(){
     headers: myHeaders
   };
 
-  userInfo.value = await fetch('http://localhost:8080/api/v1/user/user-info', options)
+  userInfo.value = await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/user/user-info', options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')

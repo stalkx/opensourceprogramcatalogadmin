@@ -33,7 +33,7 @@ async function getAllCategory(){
     headers: myHeaders
   };
 
-  categoryData.value = await fetch('http://localhost:8080/api/v1/category', options)
+  categoryData.value = await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/category', options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
@@ -63,7 +63,7 @@ async function removeCategory(){
     body: JSON.stringify(selectedCategory.value),
   };
 
-  await fetch('http://localhost:8080/api/v1/category/remove', options)
+  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/category/remove', options)
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')
@@ -89,7 +89,7 @@ async function updateCategory(){
     body: JSON.stringify(selectedCategory.value),
   };
 
-  await fetch('http://localhost:8080/api/v1/category/update', options)
+  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/category/update', options)
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')
@@ -114,7 +114,7 @@ async function saveCategory(){
     body: JSON.stringify(createCategory.value),
   };
 
-  await fetch('http://localhost:8080/api/v1/category/save', options)
+  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/category/save', options)
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')

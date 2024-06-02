@@ -16,7 +16,7 @@ function sendData(){
 
   const jsonData = JSON.stringify(loginData)
 
-  fetch('http://localhost:8080/api/v1/auth/authenticate', {
+  fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/auth/authenticate', {
     method: 'POST',
     body: jsonData,
     headers: {

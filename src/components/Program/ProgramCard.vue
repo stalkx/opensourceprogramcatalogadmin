@@ -93,7 +93,7 @@ async function getAverageRating() {
     headers: myHeaders
   };
 
-  const response = await fetch(`http://localhost:8080/api/v1/comment/average/${props.programId}`, options);
+  const response = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/comment/average/${props.programId}`, options);
   const data = await response.json();
   averageRating.value = data.averageRating;
 }
@@ -109,7 +109,7 @@ async function getAdminInfo(){
     headers: myHeaders
   };
 
-  createComment.value.user = await fetch('http://localhost:8080/api/v1/user/user-info', options)
+  createComment.value.user = await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/user/user-info', options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
@@ -136,7 +136,7 @@ async function saveComment(){
     body: JSON.stringify(createComment.value),
   };
 
-  await fetch('http://localhost:8080/api/v1/comment/save', options)
+  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/comment/save', options)
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')
@@ -162,7 +162,7 @@ async function getAllComment() {
     headers: myHeaders
   };
 
-  const response = await fetch(`http://localhost:8080/api/v1/comment/program/${props.programId}?size=6&page=${commentPage.value}&sort=addedAt,${selectedSortByTime.value.type}`, options);
+  const response = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/comment/program/${props.programId}?size=6&page=${commentPage.value}&sort=addedAt,${selectedSortByTime.value.type}`, options);
   if (response.status === 401) {
     localStorage.removeItem('token');
     router.push('/');
@@ -198,7 +198,7 @@ async function deleteComment(comment) {
     body: JSON.stringify(comment),
   }
 
-  await fetch(`http://localhost:8080/api/v1/comment/remove`, options)
+  await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/comment/remove`, options)
     .then(response => {
       if (response.status === 401) {
         localStorage.removeItem('token')
@@ -223,7 +223,7 @@ async function getAllCategory(){
     headers: myHeaders
   };
 
-  categoryData.value = await fetch('http://localhost:8080/api/v1/category', options)
+  categoryData.value = await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/category', options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
