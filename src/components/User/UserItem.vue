@@ -16,7 +16,8 @@ const props = defineProps({
   password: String,
   roles: Array,
   removeFunction: Function,
-  editFunction: Function
+  editFunction: Function,
+  editPasswordFunction: Function
 })
 
 const removeUserData = ref({
@@ -29,14 +30,18 @@ const editUserDataLogin = ref({
   userId: Number(props.userId),
   login: props.login,
   password: props.password,
-  roles: props.roles
+  roles: [...props.roles] // Ensure roles are copied correctly
 })
 
 const editUserDataPassword = ref({
   userId: Number(props.userId),
   login: props.login,
   password: '',
-  roles: props.roles
+  roles: [...props.roles] // Ensure roles are copied correctly
+})
+
+onMounted(() => {
+  console.log(editUserDataPassword.value.roles)
 })
 
 </script>
@@ -50,7 +55,7 @@ const editUserDataPassword = ref({
       <InputText v-model:="editUserDataPassword.password" id="email" class="flex-auto" autocomplete="off" />
     </div>
     <div class="flex justify-end gap-2">
-      <Button type="button" icon="pi pi-check" @click="props.editFunction(editUserDataPassword)"></Button>
+      <Button type="button" icon="pi pi-check" @click="props.editPasswordFunction(editUserDataPassword)"></Button>
     </div>
   </Dialog>
 

@@ -126,6 +126,31 @@ async function editUser(editUserData){
     .catch(error => console.error(error));
 }
 
+async function editUserPassword(editUserData){
+  const myHeaders = new Headers();
+  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  myHeaders.append('Content-Type', 'application/json');
+
+  const options = {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify(editUserData),
+  };
+
+  await fetch('http://localhost:8080/api/v1/user/update-password', options)
+    .then(response => {
+      if(response.status === 401){
+        localStorage.removeItem('token')
+        router.push('/')
+      }else {
+        getAllUser()
+        return response.json()
+      }
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+}
+
 async function getAllUser(){
 
   console.log(first.value)
@@ -150,6 +175,8 @@ async function getAllUser(){
     })
     .then(response => response.json())
     .then(data => data)
+
+  console.log(userResponse.value.content)
 }
 
 async function searchUserByLogin(){
@@ -225,6 +252,7 @@ watch(userLoginSearch, () => {
                 :roles="user.roles"
                 :remove-function="removeUser"
                 :edit-function="editUser"
+                :edit-password-function="editUserPassword"
       />
     </div>
     <Paginator class="mt-auto" v-model:first="first" :rows="1" :totalRecords="userResponse.totalPages" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" />
