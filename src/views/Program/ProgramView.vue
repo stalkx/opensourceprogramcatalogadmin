@@ -122,6 +122,7 @@ async function getImageUrl (event) {
 }
 
 async function saveProgram(){
+
   const myHeaders = new Headers();
   myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
   myHeaders.append('Content-Type', 'application/json');
@@ -270,7 +271,7 @@ watch(programResponse, () => {
   </div>
 
 
-  <Dialog v-model:visible="createProgramDialog" modal header="Створення додатку" class="w-5/6">
+  <Dialog v-model:visible="createProgramDialog" modal header="Створення додатку" :style="'width: 83.333333%'">
     <div class="flex flex-col gap-2">
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Ім'я додатку</h1>

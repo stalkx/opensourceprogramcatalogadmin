@@ -315,7 +315,7 @@ watch(commentPage, () => {
 
   <Dialog v-model:visible="readMoreProgramDialog" modal :header="props.programName" :style="{ width: '83.333333%' }">
     <div class="flex flex-row gap-5 border-b w-full p-2">
-      <div class="border rounded p-2">
+      <div class="border rounded flex p-2 items-center">
         <Image :src="props.programIconUrl" width="250" alt="Image" preview />
       </div>
       <div>
@@ -347,7 +347,7 @@ watch(commentPage, () => {
         <div class="flex flex-row gap-2 items-center">
           <i class="pi pi-github"></i>
           <h1 class="font-bold">Посиланян на GitHub:</h1>
-          <p>{{ props.programGitHubUrl }}</p>
+          <a :href="props.programGitHubUrl">{{ props.programGitHubUrl }}</a>
         </div>
         <div class="flex flex-row gap-2 items-center">
           <i class="pi pi-calendar-plus"></i>
@@ -363,8 +363,8 @@ watch(commentPage, () => {
     </div>
     <div>
       <TabView>
-        <TabPanel header="Опис додатку">
-          <div class="prose" v-html="props.programDescription"></div>
+        <TabPanel header="Опис додатку" class="w-full">
+          <div class="prose" :style="'max-width: 100%;'" v-html="props.programDescription"></div>
         </TabPanel>
         <TabPanel header="Відгуки">
 

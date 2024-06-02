@@ -3,7 +3,11 @@ import { RouterLink, RouterView, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext';
 import { onMounted, reactive } from 'vue'
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
 
+
+const toast = useToast();
 const router = useRouter()
 
 
@@ -12,37 +16,45 @@ const loginData = reactive({
   password: ''
 })
 
+const showMassage = (text, severity) => {
+  toast.add({ severity: severity, summary: 'Повідомлення', detail: text, life: 3000 });
+};
+
 function sendData(){
 
-  const jsonData = JSON.stringify(loginData)
+  if (loginData.login === '' && loginData.password === ''){
+    showMassage('Поля не можуть бути пустими!!!!', 'error')
+  }else {
+    const jsonData = JSON.stringify(loginData)
 
-  fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/auth/authenticate', {
-    method: 'POST',
-    body: jsonData,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(response => response.json())
-    .then(data => {
-      if( data.status === 401){
-        router.push('/login')
-      }else {
-        if(data.rolesList.includes('ROLE_ADMIN')){
-          console.log('Success:', data);
-          localStorage.setItem("token", data.token)
-          localStorage.setItem("role", data.rolesList)
-          router.push('admin')
+    fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/auth/authenticate', {
+      method: 'POST',
+      body: jsonData,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if( data.status === 401){
+          showMassage('Некоректні дані', 'error')
         }else {
-          router.push('login')
+          if(data.rolesList.includes('ROLE_ADMIN')){
+            console.log('Success:', data);
+            localStorage.setItem("token", data.token)
+            localStorage.setItem("role", data.rolesList)
+            router.push('admin')
+          }else {
+            showMassage('Некоректні дані', 'error')
+          }
+
         }
 
-      }
-
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
 }
 
 onMounted(() => {
@@ -56,6 +68,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <Toast />
   <div class="grid place-items-center h-screen">
     <div class="flex gap-4 flex-col">
       <div>
