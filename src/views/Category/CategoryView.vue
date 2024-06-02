@@ -69,7 +69,7 @@ async function removeCategory(){
         localStorage.removeItem('token')
         router.push('/')
       }else {
-        router.push('/admin')
+        getAllCategory()
         return response.json()
       }
     })
