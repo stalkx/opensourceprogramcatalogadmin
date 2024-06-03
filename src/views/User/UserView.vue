@@ -10,6 +10,11 @@ import UserItem from '@/components/User/UserItem.vue'
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button'
 import Dropdown from 'primevue/dropdown';
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
+
+
+const toast = useToast();
 
 
 
@@ -27,7 +32,14 @@ const createUserData = ref({
   role: {},
 })
 
+const showMassage = (text, severity) => {
+  toast.add({ severity: severity, summary: 'Повідомлення', detail: text, life: 3000 });
+};
+
 async function saveUser(){
+
+
+
   const myHeaders = new Headers();
   myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
   myHeaders.append('Content-Type', 'application/json');
@@ -43,13 +55,17 @@ async function saveUser(){
       if(response.status === 401){
         localStorage.removeItem('token')
         router.push('/')
+      }else if(response.status === 400){
+        showMassage('Користувач з таким логіном уже існує', 'error')
       }else {
         getAllUser()
+        showMassage('Користувач успішно створений', 'success')
+        showAddUser.value = false
         return response.json()
       }
     })
     .then(data => console.log(data))
-    .catch(error => console.error(error));
+    .catch(error => showMassage('Щось пішло не так(', 'error'));
 }
 
 async function getAllRole(){
@@ -94,11 +110,12 @@ async function removeUser(user) {
         router.push('/')
       } else {
         getAllUser()
+        showMassage('Користувач успішно видалений', 'success')
         return response.json()
       }
     })
     .then(data => console.log(data))
-    .catch(error => console.error(error))
+    .catch(error => showMassage('Щось пішло не так(', 'error'))
 }
 
 async function editUser(editUserData){
@@ -119,6 +136,7 @@ async function editUser(editUserData){
         router.push('/')
       }else {
         getAllUser()
+        showMassage('Логін успішно змінений', 'success')
         return response.json()
       }
     })
@@ -144,6 +162,7 @@ async function editUserPassword(editUserData){
         router.push('/')
       }else {
         getAllUser()
+        showMassage('Пароль успішно зміненно', 'success')
         return response.json()
       }
     })
@@ -211,6 +230,8 @@ watch(userLoginSearch, () => {
 </script>
 
 <template>
+
+  <Toast/>
 
   <Dialog v-model:visible="showAddUser" modal header="Додаванян користувача" :style="{ width: '25rem' }">
     <span class="text-surface-600 dark:text-surface-0/70 block mb-5">Створення нового користувача.</span>

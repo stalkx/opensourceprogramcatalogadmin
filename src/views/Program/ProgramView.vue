@@ -15,6 +15,11 @@ import Dialog from 'primevue/dialog'
 import FileUpload from 'primevue/fileupload'
 import Tiptap from '@/components/Tiptap.vue'
 import Dropdown from 'primevue/dropdown';
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
+
+
+const toast = useToast();
 
 const router = useRouter()
 let first = ref(0)
@@ -45,6 +50,10 @@ const typeSort = ref([
   { name: 'Спочатку нові', type: 'desc' }
 ]);
 
+const showMassage = (text, severity) => {
+  toast.add({ severity: severity, summary: 'Повідомлення', detail: text, life: 3000 });
+};
+
 async function removeProgram(programId){
   const myHeaders = new Headers();
   myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
@@ -59,9 +68,11 @@ async function removeProgram(programId){
     .then(response => {
       if(response.status === 401){
         localStorage.removeItem('token')
+        showMassage('Щось пішло не так', 'error')
         router.push('/')
       }else {
         getAllProgram()
+        showMassage('Додаток успішно видалений', 'success')
         return response.json()
       }
     })
@@ -122,29 +133,34 @@ async function getImageUrl (event) {
 }
 
 async function saveProgram(){
+  if(createProgramData.value.programName === '' && createProgramData.value.programVersion === '' && createProgramData.value.programDeveloper === '' && createProgramData.value.programDownloadUrl === ''){
+    showMassage('Поля не можуть бути пустими', 'error')
+  }else {
+    const myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    myHeaders.append('Content-Type', 'application/json');
 
-  const myHeaders = new Headers();
-  myHeaders.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
-  myHeaders.append('Content-Type', 'application/json');
+    const options = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(createProgramData.value),
+    };
 
-  const options = {
-    method: 'POST',
-    headers: myHeaders,
-    body: JSON.stringify(createProgramData.value),
-  };
-
-  await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/program/save', options)
-    .then(response => {
-      if(response.status === 401){
-        localStorage.removeItem('token')
-        router.push('/')
-      }else {
-        getAllProgram()
-        return response.json()
-      }
-    })
-    .then(data => console.log(data))
-    .catch(error => console.error(error));
+    await fetch('https://opensourcesoftcatalog-production.up.railway.app/api/v1/program/save', options)
+      .then(response => {
+        if(response.status === 401){
+          localStorage.removeItem('token')
+          router.push('/')
+        }else {
+          getAllProgram()
+          showMassage('Додаток успішно доданий до БД', 'success')
+          createProgramDialog.value = false
+          return response.json()
+        }
+      })
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+  }
 }
 
 async function getAllCategory(){
@@ -195,6 +211,7 @@ async function editProgram(editProgramData){
         router.push('/')
       }else {
         getAllProgram()
+        showMassage('Дані успішно змінені', 'success')
         return response.json()
       }
     })
@@ -227,14 +244,12 @@ onMounted(() => {
   getAllCategory()
 })
 
-watch(programResponse, () => {
-  console.log('HELLIO')
-  console.log(programResponse.value.content)
-})
-
 </script>
 
 <template>
+
+  <Toast/>
+
   <div class="m-2 p-2 w-full flex flex-col justify-between border">
     <div class="border-b p-2">
       <span class="relative">

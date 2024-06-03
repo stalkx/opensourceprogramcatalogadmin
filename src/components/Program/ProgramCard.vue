@@ -262,7 +262,7 @@ watch(commentPage, () => {
 
 <template>
 
-  <Dialog v-model:visible="editProgramDialog" modal header="Створення додатку" :style="{ width: '83.333333%' }">
+  <Dialog v-model:visible="editProgramDialog" modal header="Редагування додатку" :style="{ width: '83.333333%' }">
     <div class="flex flex-col gap-2">
       <div class="flex border-b mt-2 p-2 flex-col gap-2">
         <h1>Ім'я додатку</h1>
