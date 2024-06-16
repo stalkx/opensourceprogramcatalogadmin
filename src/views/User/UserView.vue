@@ -262,7 +262,7 @@ watch(userLoginSearch, () => {
     </div>
 
     <div class="m-5">
-      <Button @click="showAddUser = true" label="Створири користувача"/>
+      <Button @click="showAddUser = true" label="Створити користувача"/>
     </div>
 
     <div class="flex flex-col gap-2 m-5">

@@ -259,7 +259,7 @@ onMounted(() => {
     </div>
 
     <div class="p-2 flex flex-row justify-between">
-      <Button label="+ Додати нове програмне обезспечення" @click="createProgramDialog = true"/>
+      <Button label="+ Додати" @click="createProgramDialog = true"/>
       <Dropdown v-model="selectedSortByTime" :options="typeSort" optionLabel="name" placeholder="Тип сортування" class="w-full md:w-[14rem]" />
     </div>
 
