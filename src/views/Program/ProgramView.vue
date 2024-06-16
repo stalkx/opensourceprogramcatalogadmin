@@ -87,7 +87,7 @@ async function searchProgramByName(){
       method: 'GET'
     };
 
-    programResponse.value = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/program/search/${searchProgram.value}?size=4&page=${first.value}&sort=addedAt,${selectedSortByTime.value.type}`, options)
+    programResponse.value = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/program/search/${searchProgram.value}?size=6&page=${first.value}&sort=addedAt,${selectedSortByTime.value.type}`, options)
       .then(response => response)
       .then(response => response.json())
       .then(data => data)
@@ -109,7 +109,7 @@ async function getAllProgram(){
     headers: myHeaders
   };
 
-  programResponse.value = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/program?size=4&page=${first.value}&sort=addedAt,${selectedSortByTime.value.type}`, options)
+  programResponse.value = await fetch(`https://opensourcesoftcatalog-production.up.railway.app/api/v1/program?size=6&page=${first.value}&sort=addedAt,${selectedSortByTime.value.type}`, options)
     .then(response => {
       if (response.status === 401){
         localStorage.removeItem('token')
